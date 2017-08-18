@@ -547,10 +547,10 @@ void NetworkConnection::Reset() {
 
 void NetworkConnection::StateMachine(NetworkConnection *conn) {
   bool done = false;
-//  if (conn->event_flags == EV_READ && conn->state == ConnState::CONN_GET_RESULT) {
-////    LOG_DEBUG("return");
-//    return;
-//  }
+  if (conn->event_flags == EV_READ && conn->state == ConnState::CONN_GET_RESULT) {
+//    LOG_DEBUG("return");
+    return;
+  }
   while (done == false) {
 //    LOG_DEBUG("current state: %d", (int)conn->state);
     switch (conn->state) {
