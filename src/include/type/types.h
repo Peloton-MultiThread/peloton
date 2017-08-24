@@ -1242,6 +1242,7 @@ enum class ProcessPacketResult {
   COMPLETE,
   TERMINATE,
   PROCESSING,
+  MORE_DATA_REQUIRED
 };
 
 enum class NetworkProtocolType {
