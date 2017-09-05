@@ -25,7 +25,6 @@
 #include "type/types.h"
 
 namespace peloton {
-
 namespace parser {
 
 struct TableInfo {
@@ -43,7 +42,7 @@ struct TableInfo {
 // Base class for every SQLStatement
 class SQLStatement : public Printable {
  public:
-  SQLStatement(StatementType type) : stmt_type(type){};
+  SQLStatement(StatementType type) : stmt_type(type){}
 
   virtual ~SQLStatement() {}
 
@@ -97,9 +96,9 @@ class SQLStatementList : public Printable {
 
   virtual ~SQLStatementList() {
     // clean up statements
-    for (auto stmt : statements) delete stmt;
+//    for (auto stmt : statements) delete stmt;
 
-    free((char*)parser_msg);
+//    free((char*)parser_msg);
   }
 
   void AddStatement(SQLStatement* stmt) { statements.push_back(stmt); }
@@ -120,5 +119,6 @@ class SQLStatementList : public Printable {
   int error_col;
 };
 
+QueryType StatementTypeToQueryType(StatementType stmt_type, parser::SQLStatement* sql_stmt);
 }  // namespace parser
 }  // namespace peloton

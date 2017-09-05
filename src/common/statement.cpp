@@ -25,9 +25,14 @@ namespace peloton {
     {"ROLLBACK", QueryType::QUERY_ROLLBACK}, {"SET", QueryType::QUERY_SET},
     {"SHOW", QueryType::QUERY_SHOW}, {"INSERT", QueryType::QUERY_INSERT},
     {"PREPARE", QueryType::QUERY_PREPARE}, {"EXECUTE", QueryType::QUERY_EXECUTE},
-    {"CREATE", QueryType::QUERY_CREATE}
+    {"CREATE", QueryType::QUERY_CREATE_TABLE}
   };
-
+Statement::Statement(const std::string& statement_name,
+                     const std::string& query_string)
+    : statement_name_(statement_name), query_string_(query_string) {
+  ParseQueryTypeString(query_string_, query_type_string_);
+  MapToQueryType(query_type_string_, query_type_);
+}
 //Statement::Statement(const std::string& statement_name,
 //                     const std::string& query_string)
 //    : statement_name_(statement_name), query_string_(query_string) {
@@ -37,7 +42,8 @@ namespace peloton {
   Statement::Statement(const std::string &stmt_name, QueryType query_type,
                        std::string query_string, parser::SQLStatement *sql_stmt)
       : statement_name_(stmt_name), query_type_(query_type),
-        query_string_(query_string), sql_stmt_(sql_stmt) {};
+        query_string_(query_string), sql_stmt_(sql_stmt),
+        query_type_string_(QueryTypeToString(query_type)){};
 
 Statement::~Statement() {}
 
@@ -50,16 +56,16 @@ void Statement::ParseQueryTypeString(const std::string& query_string,
   }
   boost::to_upper(query_type_string);
 }
-//
-//void Statement::MapToQueryType(const std::string& query_type_string, QueryType& query_type) {
-//  std::unordered_map<std::string, QueryType>::iterator it;
-//  it  = query_type_map_.find(query_type_string);
-//  if (it != query_type_map_.end()) {
-//    query_type = it -> second;
-//  } else {
-//    query_type = QueryType::QUERY_OTHER;
-//  }
-//}
+
+void Statement::MapToQueryType(const std::string& query_type_string, QueryType& query_type) {
+  std::unordered_map<std::string, QueryType>::iterator it;
+  it  = query_type_map_.find(query_type_string);
+  if (it != query_type_map_.end()) {
+    query_type = it -> second;
+  } else {
+    query_type = QueryType::QUERY_OTHER;
+  }
+}
 
 std::vector<FieldInfo> Statement::GetTupleDescriptor() const {
   return tuple_descriptor_;
@@ -77,7 +83,7 @@ void Statement::SetQueryString(const std::string& query_string) {
 
 std::string Statement::GetQueryString() const { return query_string_; }
 
-//std::string Statement::GetQueryTypeString() const { return query_type_string_; }
+std::string Statement::GetQueryTypeString() const { return query_type_string_; }
 
 QueryType Statement::GetQueryType() const { return query_type_; }
 
