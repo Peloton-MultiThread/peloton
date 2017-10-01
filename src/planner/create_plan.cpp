@@ -34,7 +34,8 @@ CreatePlan::CreatePlan(std::string name, std::string database_name,
   create_type = c_type;
 }
 
-CreatePlan::CreatePlan(parser::CreateStatement *parse_tree) {
+CreatePlan::CreatePlan(std::shared_ptr<parser::CreateStatement> parse_tree) {
+  //CreatePlan::CreatePlan(parser::CreateStatement *parse_tree) {
   table_name = parse_tree->GetTableName();
   database_name = parse_tree->GetDatabaseName();
   std::vector<catalog::Column> columns;

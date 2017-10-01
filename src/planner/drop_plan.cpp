@@ -31,7 +31,8 @@ DropPlan::DropPlan(std::string name, concurrency::Transaction *txn) {
   missing = false;
 }
 
-DropPlan::DropPlan(parser::DropStatement *parse_tree,
+DropPlan::DropPlan(std::shared_ptr<parser::DropStatement> parse_tree,
+                   //DropPlan::DropPlan(parser::DropStatement *parse_tree,
                    concurrency::Transaction *txn) {
   table_name = parse_tree->GetTableName();
   // Set it up for the moment , cannot seem to find it in DropStatement

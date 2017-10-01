@@ -314,7 +314,8 @@ bool ContainsJoinColumns(
 }
 
 std::unique_ptr<planner::AbstractPlan> CreateCopyPlan(
-    parser::CopyStatement* copy_stmt) {
+    std::shared_ptr<parser::CopyStatement> copy_stmt) {
+  //parser::CopyStatement* copy_stmt) {
   std::string table_name(copy_stmt->cpy_table->GetTableName());
   bool deserialize_parameters = false;
 
