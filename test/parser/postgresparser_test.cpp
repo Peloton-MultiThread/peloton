@@ -41,7 +41,6 @@ TEST_F(PostgresParserTests, BasicTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -49,7 +48,6 @@ TEST_F(PostgresParserTests, BasicTest) {
     }
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-    //delete stmt_list;
   }
 }
 
@@ -67,7 +65,6 @@ TEST_F(PostgresParserTests, AggTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -75,7 +72,6 @@ TEST_F(PostgresParserTests, AggTest) {
     }
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-    //delete stmt_list;
   }
 }
 
@@ -91,7 +87,6 @@ TEST_F(PostgresParserTests, GroupByTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
 
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
@@ -100,8 +95,6 @@ TEST_F(PostgresParserTests, GroupByTest) {
     }
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-
-    //delete stmt_list;
   }
 }
 
@@ -110,11 +103,9 @@ TEST_F(PostgresParserTests, OrderByTest) {
   // SELECT * FROM foo ORDER BY id;
   std::string query = "SELECT * FROM foo ORDER BY id;";
   auto stmt_list = parser.BuildParseTree(query);
-//  auto stmt_list = parser.BuildParseTree(query).release();
   auto sql_stmt = stmt_list->statements[0];
   EXPECT_EQ(sql_stmt->GetType(), StatementType::SELECT);
   auto select_stmt = std::dynamic_pointer_cast<parser::SelectStatement>(sql_stmt);
-  //auto select_stmt = (parser::SelectStatement *)(sql_stmt);
   auto order_by = select_stmt->order;
   EXPECT_NE(order_by, nullptr);
   EXPECT_NE(order_by->types, nullptr);
@@ -126,16 +117,13 @@ TEST_F(PostgresParserTests, OrderByTest) {
   auto expr = order_by->exprs->at(0);
   EXPECT_EQ(expr->GetExpressionType(), ExpressionType::VALUE_TUPLE);
   EXPECT_EQ(((expression::TupleValueExpression *)expr)->GetColumnName(), "id");
-//  delete stmt_list;
 
   // SELECT * FROM foo ORDER BY id ASC;
   query = "SELECT * FROM foo ORDER BY id ASC;";
   stmt_list = parser.BuildParseTree(query);
-  //stmt_list = parser.BuildParseTree(query).release();
   sql_stmt = stmt_list->statements[0];
   EXPECT_EQ(sql_stmt->GetType(), StatementType::SELECT);
   select_stmt = std::dynamic_pointer_cast<parser::SelectStatement>(sql_stmt);
-  //select_stmt = (parser::SelectStatement *)(sql_stmt);
   order_by = select_stmt->order;
   EXPECT_NE(order_by, nullptr);
   EXPECT_NE(order_by->types, nullptr);
@@ -147,16 +135,13 @@ TEST_F(PostgresParserTests, OrderByTest) {
   expr = order_by->exprs->at(0);
   EXPECT_EQ(expr->GetExpressionType(), ExpressionType::VALUE_TUPLE);
   EXPECT_EQ(((expression::TupleValueExpression *)expr)->GetColumnName(), "id");
-//  delete stmt_list;
 
   // SELECT * FROM foo ORDER BY id DESC;
   query = "SELECT * FROM foo ORDER BY id DESC;";
   stmt_list = parser.BuildParseTree(query);
-  //stmt_list = parser.BuildParseTree(query).release();
   sql_stmt = stmt_list->statements[0];
   EXPECT_EQ(sql_stmt->GetType(), StatementType::SELECT);
   select_stmt = std::dynamic_pointer_cast<parser::SelectStatement>(sql_stmt);
-  //select_stmt = (parser::SelectStatement *)(sql_stmt);
   order_by = select_stmt->order;
   EXPECT_NE(order_by, nullptr);
   EXPECT_NE(order_by->types, nullptr);
@@ -168,16 +153,13 @@ TEST_F(PostgresParserTests, OrderByTest) {
   expr = order_by->exprs->at(0);
   EXPECT_EQ(expr->GetExpressionType(), ExpressionType::VALUE_TUPLE);
   EXPECT_EQ(((expression::TupleValueExpression *)expr)->GetColumnName(), "id");
-//  delete stmt_list;
 
   // SELECT * FROM foo ORDER BY id, name;
   query = "SELECT * FROM foo ORDER BY id, name;";
   stmt_list = parser.BuildParseTree(query);
-  //stmt_list = parser.BuildParseTree(query).release();
   sql_stmt = stmt_list->statements[0];
   EXPECT_EQ(sql_stmt->GetType(), StatementType::SELECT);
   select_stmt = std::dynamic_pointer_cast<parser::SelectStatement>(sql_stmt);
-  //select_stmt = (parser::SelectStatement *)(sql_stmt);
   order_by = select_stmt->order;
   EXPECT_NE(order_by, nullptr);
   EXPECT_NE(order_by->types, nullptr);
@@ -193,16 +175,13 @@ TEST_F(PostgresParserTests, OrderByTest) {
   EXPECT_EQ(expr->GetExpressionType(), ExpressionType::VALUE_TUPLE);
   EXPECT_EQ(((expression::TupleValueExpression *)expr)->GetColumnName(),
             "name");
-//  delete stmt_list;
 
   // SELECT * FROM foo ORDER BY id, name;
   query = "SELECT * FROM foo ORDER BY id, name DESC;";
   stmt_list = parser.BuildParseTree(query);
-  //stmt_list = parser.BuildParseTree(query).release();
   sql_stmt = stmt_list->statements[0];
   EXPECT_EQ(sql_stmt->GetType(), StatementType::SELECT);
   select_stmt = std::dynamic_pointer_cast<parser::SelectStatement>(sql_stmt);
-  //select_stmt = (parser::SelectStatement *)(sql_stmt);
   order_by = select_stmt->order;
   EXPECT_NE(order_by, nullptr);
   EXPECT_NE(order_by->types, nullptr);
@@ -219,7 +198,6 @@ TEST_F(PostgresParserTests, OrderByTest) {
   EXPECT_EQ(expr->GetExpressionType(), ExpressionType::VALUE_TUPLE);
   EXPECT_EQ(((expression::TupleValueExpression *)expr)->GetColumnName(),
             "name");
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, ConstTest) {
@@ -233,7 +211,6 @@ TEST_F(PostgresParserTests, ConstTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -241,7 +218,6 @@ TEST_F(PostgresParserTests, ConstTest) {
     }
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-//    delete stmt_list;
   }
 }
 
@@ -268,7 +244,6 @@ TEST_F(PostgresParserTests, JoinTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -280,7 +255,6 @@ TEST_F(PostgresParserTests, JoinTest) {
     if (ii == 5) {
       auto select_stmt = 
           std::dynamic_pointer_cast<parser::SelectStatement>(stmt_list->statements[0]);
-      //reinterpret_cast<parser::SelectStatement *>(stmt_list->statements[0]);
       auto join_table = select_stmt->from_table;
       EXPECT_TRUE(join_table->type == TableReferenceType::JOIN);
       auto l_join = join_table->join->left;
@@ -290,7 +264,6 @@ TEST_F(PostgresParserTests, JoinTest) {
       LOG_INFO("condition 0 : %s", join_table->join->condition->GetInfo().c_str());
       LOG_INFO("condition 0 : %s", l_join->join->condition->GetInfo().c_str());
     }
-//    delete stmt_list;
   }
 }
 
@@ -305,7 +278,6 @@ TEST_F(PostgresParserTests, NestedQueryTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -313,7 +285,6 @@ TEST_F(PostgresParserTests, NestedQueryTest) {
     }
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-//    delete stmt_list;
   }
 }
 
@@ -329,7 +300,6 @@ TEST_F(PostgresParserTests, MultiTableTest) {
   // Parsing
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
-    //auto stmt_list = parser.BuildParseTree(query).release();
     auto stmt_list = parser.BuildParseTree(query);
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
@@ -338,7 +308,6 @@ TEST_F(PostgresParserTests, MultiTableTest) {
     }
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-//    delete stmt_list;
   }
 }
 
@@ -354,7 +323,6 @@ TEST_F(PostgresParserTests, ColumnUpdateTest) {
   // Parsing
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
-    //auto stmt_list = parser.BuildParseTree(query).release();
     auto stmt_list = parser.BuildParseTree(query);
     EXPECT_TRUE(stmt_list->is_valid);
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
@@ -364,7 +332,6 @@ TEST_F(PostgresParserTests, ColumnUpdateTest) {
 
     EXPECT_EQ(sql_stmt->GetType(), StatementType::UPDATE);
     auto update_stmt = std::dynamic_pointer_cast<parser::UpdateStatement>(sql_stmt);
-    //auto update_stmt = (parser::UpdateStatement *)(sql_stmt);
     auto table = update_stmt->table;
     auto updates = update_stmt->updates;
     auto where_clause = update_stmt->where;
@@ -405,8 +372,6 @@ TEST_F(PostgresParserTests, ColumnUpdateTest) {
     auto right_const = (expression::ConstantValueExpression *)(right_child);
 
     EXPECT_EQ(right_const->GetValue().ToString(), std::string("2"));
-
-//    delete stmt_list;
   }
 }
 
@@ -416,12 +381,9 @@ TEST_F(PostgresParserTests, ExpressionUpdateTest) {
       "WHERE S_I_ID = 68999 AND S_W_ID = 4";
   auto &parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //parser::SQLStatementList *stmt_list = parser.BuildParseTree(query);
-  //parser::SQLStatementList *stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
 
   auto update_stmt = std::dynamic_pointer_cast<parser::UpdateStatement>(stmt_list->GetStatements()[0]);
-  //auto update_stmt = (parser::UpdateStatement *)stmt_list->GetStatements()[0];
   EXPECT_EQ(std::string(update_stmt->table->table_info_->table_name), "stock");
 
   // TODO: Uncomment when the AExpressionTransfrom supports operator expression
@@ -459,8 +421,6 @@ TEST_F(PostgresParserTests, ExpressionUpdateTest) {
   constant = (expression::ConstantValueExpression *)cond2->GetChild(1);
   EXPECT_TRUE(constant->GetValue().CompareEquals(
       type::ValueFactory::GetIntegerValue(4)));
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, StringUpdateTest) {
@@ -474,13 +434,11 @@ TEST_F(PostgresParserTests, StringUpdateTest) {
   auto parser = parser::PostgresParser::GetInstance();
   // Parsing
   auto stmt_list = parser.BuildParseTree(queries[0]);
-  //auto stmt_list = parser.BuildParseTree(queries[0]).release();
   auto stmt = stmt_list->GetStatement(0);
 
   // Check root type
   EXPECT_EQ(stmt->GetType(), StatementType::UPDATE);
   auto update = std::dynamic_pointer_cast<parser::UpdateStatement>(stmt);
-  //auto update = (parser::UpdateStatement *)stmt;
 
   // Check table name
   auto table_ref = update->table;
@@ -533,8 +491,6 @@ TEST_F(PostgresParserTests, StringUpdateTest) {
       "2016-11-15 15:07:37");
   EXPECT_EQ(((expression::ConstantValueExpression *)value)->GetValueType(),
             type::TypeId::VARCHAR);
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, DeleteTest) {
@@ -548,7 +504,6 @@ TEST_F(PostgresParserTests, DeleteTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -558,13 +513,11 @@ TEST_F(PostgresParserTests, DeleteTest) {
     EXPECT_TRUE(stmt_list->GetNumStatements() == 1);
     EXPECT_TRUE(stmt_list->GetStatement(0)->GetType() == StatementType::DELETE);
     auto delstmt = std::dynamic_pointer_cast<parser::DeleteStatement>(stmt_list->GetStatement(0));
-    //auto delstmt = (parser::DeleteStatement *)stmt_list->GetStatement(0);
     EXPECT_EQ(delstmt->GetTableName(), "foo");
     EXPECT_TRUE(delstmt->expr == nullptr);
 
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-//    delete stmt_list;
   }
 }
 
@@ -579,7 +532,6 @@ TEST_F(PostgresParserTests, DeleteTestWithPredicate) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -589,11 +541,8 @@ TEST_F(PostgresParserTests, DeleteTestWithPredicate) {
     EXPECT_TRUE(stmt_list->GetNumStatements() == 1);
     EXPECT_TRUE(stmt_list->GetStatement(0)->GetType() == StatementType::DELETE);
     auto delstmt = std::dynamic_pointer_cast<parser::DeleteStatement>(stmt_list->GetStatement(0));
-    //auto delstmt = (parser::DeleteStatement *)stmt_list->GetStatement(0);
     EXPECT_EQ(delstmt->GetTableName(), "foo");
     EXPECT_TRUE(delstmt->expr != nullptr);
-
-//    delete stmt_list;
   }
 }
 
@@ -607,7 +556,6 @@ TEST_F(PostgresParserTests, InsertTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -622,7 +570,6 @@ TEST_F(PostgresParserTests, InsertTest) {
     EXPECT_TRUE(stmt_list->GetStatement(0)->GetType() == StatementType::INSERT);
     EXPECT_NE(nullptr, stmt_list->GetStatement(0));
     auto insert_stmt = std::dynamic_pointer_cast<parser::InsertStatement>(stmt_list->GetStatement(0));
-    //auto insert_stmt = (parser::InsertStatement *)stmt_list->GetStatement(0);
     EXPECT_NE(nullptr, insert_stmt);
     EXPECT_NE(nullptr, insert_stmt->table_ref_);
     EXPECT_EQ("foo", insert_stmt->GetTableName());
@@ -640,7 +587,6 @@ TEST_F(PostgresParserTests, InsertTest) {
 
     // LOG_TRACE("%d : %s", ++ii, stmt_list->GetInfo().c_str());
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-//    delete stmt_list;
   }
 }
 
@@ -654,10 +600,8 @@ TEST_F(PostgresParserTests, CreateTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
   auto create_stmt = std::dynamic_pointer_cast<parser::CreateStatement>(stmt_list->GetStatement(0));
-  //auto create_stmt = (parser::CreateStatement *)stmt_list->GetStatement(0);
   LOG_INFO("%s", stmt_list->GetInfo().c_str());
   // Check column definition
   EXPECT_EQ(create_stmt->columns->size(), 5);
@@ -683,44 +627,30 @@ TEST_F(PostgresParserTests, CreateTest) {
   EXPECT_EQ("c_id", std::string(column->foreign_key_source->at(0)));
   EXPECT_EQ("cid", std::string(column->foreign_key_sink->at(0)));
   EXPECT_EQ("country", std::string(column->table_info_->table_name));
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, TransactionTest) {
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree("BEGIN TRANSACTION;");
-  //auto stmt_list = parser.BuildParseTree("BEGIN TRANSACTION;").release();
   auto transac_stmt =
       std::dynamic_pointer_cast<parser::TransactionStatement>(stmt_list->GetStatement(0));
-  //(parser::TransactionStatement *)stmt_list->GetStatement(0);
   EXPECT_TRUE(stmt_list->is_valid);
   EXPECT_EQ(parser::TransactionStatement::kBegin, transac_stmt->type);
-//  delete stmt_list;
 
   stmt_list = parser.BuildParseTree("BEGIN;");
-  //stmt_list = parser.BuildParseTree("BEGIN;").release();
   transac_stmt = std::dynamic_pointer_cast<parser::TransactionStatement>(stmt_list->GetStatement(0));
-  //transac_stmt = (parser::TransactionStatement *)stmt_list->GetStatement(0);
   EXPECT_TRUE(stmt_list->is_valid);
   EXPECT_EQ(parser::TransactionStatement::kBegin, transac_stmt->type);
-//  delete stmt_list;
 
   stmt_list = parser.BuildParseTree("COMMIT TRANSACTION;");
-  //stmt_list = parser.BuildParseTree("COMMIT TRANSACTION;").release();
   transac_stmt = std::dynamic_pointer_cast<parser::TransactionStatement>(stmt_list->GetStatement(0));
-  //transac_stmt = (parser::TransactionStatement *)stmt_list->GetStatement(0);
   EXPECT_TRUE(stmt_list->is_valid);
   EXPECT_EQ(parser::TransactionStatement::kCommit, transac_stmt->type);
-//  delete stmt_list;
 
   stmt_list = parser.BuildParseTree("ROLLBACK;");
-  //stmt_list = parser.BuildParseTree("ROLLBACK;").release();
   transac_stmt = std::dynamic_pointer_cast<parser::TransactionStatement>(stmt_list->GetStatement(0));
-  //transac_stmt = (parser::TransactionStatement *)stmt_list->GetStatement(0);
   EXPECT_TRUE(stmt_list->is_valid);
   EXPECT_EQ(parser::TransactionStatement::kRollback, transac_stmt->type);
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, CreateIndexTest) {
@@ -730,10 +660,8 @@ TEST_F(PostgresParserTests, CreateIndexTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
   auto create_stmt = std::dynamic_pointer_cast<parser::CreateStatement>(stmt_list->GetStatement(0));
-  //auto create_stmt = (parser::CreateStatement *)stmt_list->GetStatement(0);
   LOG_INFO("%s", stmt_list->GetInfo().c_str());
   // Check attributes
   EXPECT_EQ(parser::CreateStatement::kIndex, create_stmt->type);
@@ -742,8 +670,6 @@ TEST_F(PostgresParserTests, CreateIndexTest) {
   EXPECT_TRUE(create_stmt->unique);
   EXPECT_EQ("o_w_id", std::string(create_stmt->index_attrs->at(0)));
   EXPECT_EQ("o_d_id", std::string(create_stmt->index_attrs->at(1)));
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, InsertIntoSelectTest) {
@@ -757,7 +683,6 @@ TEST_F(PostgresParserTests, InsertIntoSelectTest) {
   UNUSED_ATTRIBUTE int ii = 0;
   for (auto query : queries) {
     auto stmt_list = parser.BuildParseTree(query);
-    //auto stmt_list = parser.BuildParseTree(query).release();
     EXPECT_TRUE(stmt_list->is_valid);
     if (stmt_list->is_valid == false) {
       LOG_ERROR("Message: %s, line: %d, col: %d", stmt_list->parser_msg,
@@ -767,14 +692,12 @@ TEST_F(PostgresParserTests, InsertIntoSelectTest) {
     EXPECT_EQ(1, stmt_list->GetNumStatements());
     EXPECT_TRUE(stmt_list->GetStatement(0)->GetType() == StatementType::INSERT);
     auto insert_stmt = std::dynamic_pointer_cast<parser::InsertStatement>(stmt_list->GetStatement(0));
-    //auto insert_stmt = (parser::InsertStatement *)stmt_list->GetStatement(0);
     EXPECT_EQ("foo", insert_stmt->GetTableName());
     EXPECT_TRUE(insert_stmt->insert_values == nullptr);
     EXPECT_TRUE(insert_stmt->select->GetType() == StatementType::SELECT);
     EXPECT_EQ("bar",
               std::string(insert_stmt->select->from_table->GetTableName()));
     LOG_INFO("%d : %s", ++ii, stmt_list->GetInfo().c_str());
-//    delete stmt_list;
   }
 }
 
@@ -783,12 +706,8 @@ TEST_F(PostgresParserTests, CreateDbTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
-  //  auto create_stmt = (parser::CreateStatement*)stmt_list->GetStatement(0);
   //  LOG_INFO("%s", stmt_list->GetInfo().c_str());
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, DistinctFromTest) {
@@ -796,10 +715,7 @@ TEST_F(PostgresParserTests, DistinctFromTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, ConstraintTest) {
@@ -813,12 +729,9 @@ TEST_F(PostgresParserTests, ConstraintTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
-  //  auto create_stmt = (parser::CreateStatement*)stmt_list->GetStatement(0);
   //  LOG_INFO("%s", stmt_list->GetInfo().c_str());
   auto create_stmt = std::dynamic_pointer_cast<parser::CreateStatement>(stmt_list->GetStatement(0));
-  //auto create_stmt = (parser::CreateStatement *)stmt_list->GetStatement(0);
   LOG_INFO("%s", stmt_list->GetInfo().c_str());
   // Check column definition
   EXPECT_EQ(create_stmt->columns->size(), 5);
@@ -897,8 +810,6 @@ TEST_F(PostgresParserTests, ConstraintTest) {
   EXPECT_EQ(parser::ColumnDefinition::FKConstrActionType::SETDEFAULT, column->foreign_key_update_action);
   EXPECT_EQ(parser::ColumnDefinition::FKConstrActionType::NOACTION, column->foreign_key_delete_action);
   EXPECT_EQ(parser::ColumnDefinition::FKConstrMatchType::SIMPLE, column->foreign_key_match_type);
-
-//  delete stmt_list;
 }
 
 
@@ -913,12 +824,9 @@ TEST_F(PostgresParserTests, DataTypeTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
-  //  auto create_stmt = (parser::CreateStatement*)stmt_list->GetStatement(0);
   //  LOG_INFO("%s", stmt_list->GetInfo().c_str());
   auto create_stmt = std::dynamic_pointer_cast<parser::CreateStatement>(stmt_list->GetStatement(0));
-  //auto create_stmt = (parser::CreateStatement *)stmt_list->GetStatement(0);
   LOG_INFO("%s", stmt_list->GetInfo().c_str());
   // Check column definition
   EXPECT_EQ(create_stmt->columns->size(), 3);
@@ -941,8 +849,6 @@ TEST_F(PostgresParserTests, DataTypeTest) {
   EXPECT_EQ("c", std::string(column->name));
   EXPECT_EQ(type::TypeId::VARBINARY, column->GetValueType(column->type));
   EXPECT_EQ(32, column->varlen);
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, FuncCallTest) {
@@ -950,12 +856,8 @@ TEST_F(PostgresParserTests, FuncCallTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
-  //  auto create_stmt = (parser::CreateStatement*)stmt_list->GetStatement(0);
-  //  LOG_INFO("%s", stmt_list->GetInfo().c_str());
   auto select_stmt = std::dynamic_pointer_cast<parser::SelectStatement>(stmt_list->GetStatement(0));
-  //auto select_stmt = (parser::SelectStatement *) stmt_list->GetStatement(0);
   LOG_INFO("%s", stmt_list->GetInfo().c_str());
 
   // Check ADD(1,a)
@@ -992,8 +894,6 @@ TEST_F(PostgresParserTests, FuncCallTest) {
   const_expr = (expression::ConstantValueExpression*) op_expr->GetChild(1);
   EXPECT_TRUE(const_expr != nullptr);
   EXPECT_TRUE(const_expr->GetValue().CompareEquals(type::ValueFactory::GetIntegerValue(2)));
-
-//  delete stmt_list;
 }
 
 TEST_F(PostgresParserTests, CaseTest) {
@@ -1001,10 +901,7 @@ TEST_F(PostgresParserTests, CaseTest) {
 
   auto parser = parser::PostgresParser::GetInstance();
   auto stmt_list = parser.BuildParseTree(query);
-  //auto stmt_list = parser.BuildParseTree(query).release();
   EXPECT_TRUE(stmt_list->is_valid);
-
-//  delete stmt_list;
 }
 
 

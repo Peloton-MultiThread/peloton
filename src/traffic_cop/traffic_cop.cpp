@@ -261,10 +261,6 @@ void TrafficCop::ExecuteStatementPlanGetResult() {
     }
   }
 }
-/*
- * 1: Why optimizer needs a SQLStatementList?????? Why does it need a unique_ptr????
- * 2: what is doing here???
- */
 std::shared_ptr<Statement> TrafficCop::PrepareStatement(
     const std::string &stmt_name,
     const std::string &query_string,
@@ -273,8 +269,7 @@ std::shared_ptr<Statement> TrafficCop::PrepareStatement(
     UNUSED_ATTRIBUTE std::string &error_message,
     const size_t thread_id UNUSED_ATTRIBUTE) {
 
-  LOG_INFO("Prepare Statement query: %s", query_string.c_str());
-
+  LOG_TRACE("Prepare Statement query: %s", query_string.c_str());
   StatementType stmt_type = sql_stmt->GetType();
   QueryType query_type = parser::StatementTypeToQueryType(stmt_type, sql_stmt);
   std::shared_ptr<Statement> statement(new Statement(stmt_name, query_type, query_string, sql_stmt));
@@ -311,7 +306,6 @@ std::shared_ptr<Statement> TrafficCop::PrepareStatement(
   }
 
   LOG_TRACE("Optimizer Build Peloton Plan Tree...");
-  // TODO: 1
   try {
     std::shared_ptr<parser::SQLStatementList> sql_stmt_list = std::make_shared<parser::SQLStatementList>();
     sql_stmt_list->AddStatement(sql_stmt);
@@ -321,7 +315,6 @@ std::shared_ptr<Statement> TrafficCop::PrepareStatement(
     // invalidate it at a later point when the catalog changes
     const std::set<oid_t> table_oids = planner::PlanUtil::GetTablesReferenced(plan.get());
     statement->SetReferencedTables(table_oids);
-    // TODO: 2
     if (query_type == QueryType::QUERY_SELECT) {
       auto tuple_descriptor = GenerateTupleDescriptor(sql_stmt);
       statement->SetTupleDescriptor(tuple_descriptor);
@@ -346,7 +339,7 @@ std::shared_ptr<Statement> TrafficCop::PrepareStatement(
 */
 void TrafficCop::AbortInvalidStmt() {
   if (single_statement_txn_) {
-      LOG_DEBUG("SINGLE ABORT!");
+      LOG_TRACE("SINGLE ABORT!");
       AbortQueryHelper();
     } else { // multi-statment txn
       if (tcop_txn_state_.top().second != ResultType::ABORTED) {
@@ -382,7 +375,6 @@ void TrafficCop::GetDataTables(
 
 std::vector<FieldInfo> TrafficCop::GenerateTupleDescriptor(
     std::shared_ptr<parser::SQLStatement> sql_stmt) {
-  //parser::SQLStatement *sql_stmt) {
   std::vector<FieldInfo> tuple_descriptor;
   if (sql_stmt->GetType() != StatementType::SELECT) return tuple_descriptor;
   auto select_stmt = std::dynamic_pointer_cast<parser::SelectStatement>(sql_stmt);

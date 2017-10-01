@@ -30,7 +30,6 @@
 #include "event.h"
 
 namespace peloton {
-//void ExecutePlanWrapper(void *arg_ptr);
 namespace tcop {
 
 //===--------------------------------------------------------------------===//
@@ -51,13 +50,6 @@ class TrafficCop {
 
   // reset this object
   void Reset();
-
-  // PortalExec - Execute query string
-//  ResultType ExecuteStatement(const std::string &query,
-//                              std::vector<StatementResult> &result,
-//                              std::vector<FieldInfo> &tuple_descriptor,
-//                              int &rows_changed, std::string &error_message,
-//                              const size_t thread_id = 0);
 
   // ExecPrepStmt - Execute a statement from a prepared and bound statement
   ResultType ExecuteStatement(
@@ -134,10 +126,6 @@ class TrafficCop {
   // flag of single statement txn
   bool single_statement_txn_;
 
-  // flag of psql protocol
-  // executePlan arguments
-//  executor::ExecuteResult p_status_;
-
   std::shared_ptr<planner::AbstractPlan> plan_;
 
   std::vector<StatementResult> result_;
@@ -164,13 +152,6 @@ class TrafficCop {
   void GetDataTables(parser::TableRef *from_table,
                      std::vector<storage::DataTable *> &target_tables);
 
-//  const std::shared_ptr<Statement> statement_;
-//  const std::vector<type::Value> params_;
-//  UNUSED_ATTRIBUTE const bool unnamed;
-//  std::shared_ptr<stats::QueryMetric::QueryParams> param_stats_;
-//  const std::vector<int> &result_format, std::vector<StatementResult> result;
-//  int &rows_changed, UNUSED_ATTRIBUTE std::string error_message;
-//  const size_t thread_id UNUSED_ATTRIBUTE;
 };
 
 //===--------------------------------------------------------------------===//
