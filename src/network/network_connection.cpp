@@ -423,6 +423,10 @@ bool NetworkConnection::ProcessInitialPacket(InputPacket *pkt) {
   int32_t proto_version = PacketGetInt(pkt, sizeof(int32_t));
   LOG_INFO("protocol version: %d", proto_version);
 
+  protocol_handler_ =
+      ProtocolHandlerFactory::CreateProtocolHandler(
+          ProtocolHandlerType::Postgres, &traffic_cop_);
+
   // TODO: consider more about return value
   if (proto_version == SSL_MESSAGE_VERNO) {
     LOG_TRACE("process SSL MESSAGE");
@@ -479,9 +483,9 @@ bool NetworkConnection::ProcessStartupPacket(InputPacket* pkt, int32_t proto_ver
 
   }
 
-  protocol_handler_ =
-      ProtocolHandlerFactory::CreateProtocolHandler(
-          ProtocolHandlerType::Postgres, &traffic_cop_);
+//  protocol_handler_ =
+//      ProtocolHandlerFactory::CreateProtocolHandler(
+//          ProtocolHandlerType::Postgres, &traffic_cop_);
 
   protocol_handler_->SendInitialResponse();
 
