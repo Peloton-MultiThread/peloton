@@ -127,8 +127,8 @@ void NetworkManager::StartServer() {
     }
 
     LOG_INFO("private key file path %s", private_key_file_.c_str());
-    /*
-     * Temporarily commented to pass tests START
+
+    // Temporarily commented to pass tests START
     // register private key
     if (SSL_CTX_use_PrivateKey_file(ssl_context, private_key_file_.c_str(),
                                     SSL_FILETYPE_PEM) == 0)
@@ -144,8 +144,8 @@ void NetworkManager::StartServer() {
       SSL_CTX_free(ssl_context);
       throw ConnectionException("Error associating certificate.\n");
     }
-    * Temporarily commented to pass tests END
-    */
+    // Temporarily commented to pass tests END
+
     if (bind(listen_fd, (struct sockaddr *) &sin, sizeof(sin)) < 0)
     {
       SSL_CTX_free(ssl_context);
