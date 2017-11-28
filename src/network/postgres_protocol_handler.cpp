@@ -1098,7 +1098,7 @@ bool PostgresProtocolHandler::ProcessSSLRequestPacket(InputPacket *pkt, bool ssl
     LOG_INFO("SSL not support");
   }
   responses.push_back(std::move(response));
-  force_flush = true;
+  SetFlushFlag(true);
   return true;
 }
 
